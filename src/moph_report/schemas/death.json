@@ -1,0 +1,16 @@
+{
+  "name": "DEATH",
+  "thai_name": "ข้อมูลการตายของประชาชนในเขตรับผิดชอบ",
+  "description": "Death records for people in the catchment area.",
+  "delimiter": "|",
+  "primary_key": ["HOSPCODE", "CID"],
+  "fields": [
+    {"name": "HOSPCODE", "thai": "รหัสสถานพยาบาล", "type": "string", "required": true, "exact_length": 5},
+    {"name": "CID", "thai": "เลขประจำตัวประชาชนผู้ตาย", "type": "cid", "required": true, "exact_length": 13},
+    {"name": "PID", "thai": "ทะเบียนบุคคล", "type": "string", "required": false, "max_length": 15},
+    {"name": "DDEATH", "thai": "วันที่ตาย", "type": "date", "required": true},
+    {"name": "CAUSE", "thai": "สาเหตุการตาย (ICD-10)", "type": "icd10", "required": true, "max_length": 6},
+    {"name": "TYPEDEATH", "thai": "สถานที่ตาย", "type": "string", "required": false, "max_length": 1},
+    {"name": "D_UPDATE", "thai": "วันเวลาที่ปรับปรุงข้อมูล", "type": "datetime", "required": true}
+  ]
+}

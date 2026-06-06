@@ -1,0 +1,26 @@
+{
+  "name": "PERSON",
+  "thai_name": "ข้อมูลทั่วไปของประชาชนในเขตรับผิดชอบ",
+  "description": "General demographic data for people in the hospital's catchment area.",
+  "delimiter": "|",
+  "primary_key": ["HOSPCODE", "CID"],
+  "fields": [
+    {"name": "HOSPCODE", "thai": "รหัสสถานพยาบาล", "type": "string", "required": true, "exact_length": 5},
+    {"name": "CID", "thai": "เลขประจำตัวประชาชน", "type": "cid", "required": true, "exact_length": 13},
+    {"name": "PID", "thai": "ทะเบียนบุคคลในแฟ้มของสถานพยาบาล", "type": "string", "required": true, "max_length": 15},
+    {"name": "NAME", "thai": "ชื่อ", "type": "string", "required": false, "max_length": 100},
+    {"name": "LNAME", "thai": "นามสกุล", "type": "string", "required": false, "max_length": 100},
+    {"name": "HID", "thai": "ทะเบียนบ้านในแฟ้ม HOME", "type": "string", "required": false, "max_length": 15},
+    {"name": "SEX", "thai": "เพศ", "type": "string", "required": true, "allowed": ["1", "2"], "notes": "1=ชาย, 2=หญิง"},
+    {"name": "BIRTH", "thai": "วันเดือนปีเกิด", "type": "date", "required": true},
+    {"name": "MSTATUS", "thai": "สถานภาพสมรส", "type": "string", "required": false, "allowed": ["1", "2", "3", "4", "5", "6", "9"]},
+    {"name": "OCCUPATION_NEW", "thai": "รหัสอาชีพ", "type": "string", "required": false, "max_length": 4},
+    {"name": "RACE", "thai": "เชื้อชาติ", "type": "string", "required": false, "max_length": 3},
+    {"name": "NATION", "thai": "สัญชาติ", "type": "string", "required": false, "max_length": 3},
+    {"name": "RELIGION", "thai": "ศาสนา", "type": "string", "required": false, "max_length": 2},
+    {"name": "EDUCATION", "thai": "ระดับการศึกษา", "type": "string", "required": false, "max_length": 2},
+    {"name": "ABOGROUP", "thai": "หมู่เลือด", "type": "string", "required": false, "allowed": ["1", "2", "3", "4", "9"], "notes": "1=A,2=B,3=AB,4=O,9=ไม่ทราบ"},
+    {"name": "TYPEAREA", "thai": "สถานะบุคคลในเขตรับผิดชอบ", "type": "string", "required": true, "allowed": ["1", "2", "3", "4", "5"]},
+    {"name": "D_UPDATE", "thai": "วันเวลาที่ปรับปรุงข้อมูล", "type": "datetime", "required": true}
+  ]
+}

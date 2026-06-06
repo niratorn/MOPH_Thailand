@@ -1,0 +1,18 @@
+{
+  "name": "DIAGNOSIS_OPD",
+  "thai_name": "ข้อมูลการวินิจฉัยโรคของผู้ป่วยนอก",
+  "description": "Outpatient diagnosis records (ICD-10 coded).",
+  "delimiter": "|",
+  "primary_key": ["HOSPCODE", "PID", "SEQ", "DIAGCODE", "DIAGTYPE"],
+  "fields": [
+    {"name": "HOSPCODE", "thai": "รหัสสถานพยาบาล", "type": "string", "required": true, "exact_length": 5},
+    {"name": "PID", "thai": "ทะเบียนบุคคล", "type": "string", "required": true, "max_length": 15},
+    {"name": "SEQ", "thai": "ลำดับที่ของการรับบริการ", "type": "string", "required": true, "max_length": 16},
+    {"name": "DATE_SERV", "thai": "วันที่มารับบริการ", "type": "date", "required": true},
+    {"name": "DIAGTYPE", "thai": "ชนิดการวินิจฉัย", "type": "string", "required": true, "allowed": ["1", "2", "3", "4", "5"], "notes": "1=Principal, 2=Comorbidity, 3=Complication, 4=Other, 5=External cause"},
+    {"name": "DIAGCODE", "thai": "รหัสวินิจฉัยโรค (ICD-10)", "type": "icd10", "required": true, "max_length": 6},
+    {"name": "CLINIC", "thai": "รหัสคลินิกที่ให้บริการ", "type": "string", "required": false, "max_length": 5},
+    {"name": "PROVIDER", "thai": "รหัสผู้ให้บริการ", "type": "string", "required": false, "max_length": 15},
+    {"name": "D_UPDATE", "thai": "วันเวลาที่ปรับปรุงข้อมูล", "type": "datetime", "required": true}
+  ]
+}

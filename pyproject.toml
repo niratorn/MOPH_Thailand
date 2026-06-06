@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "moph-report"
+version = "0.1.0"
+description = "Validation and reporting tools for MOPH Thailand 43-file (43 แฟ้ม) hospital datasets"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "MOPH Thailand contributors" }]
+keywords = ["moph", "thailand", "healthcare", "43files", "hdc", "validation"]
+
+# Intentionally ZERO runtime dependencies: the standard library only,
+# so hospital IT staff can run this offline with a stock Python install.
+dependencies = []
+
+[project.scripts]
+moph-report = "moph_report.cli:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+moph_report = ["schemas/*.json"]

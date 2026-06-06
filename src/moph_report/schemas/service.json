@@ -1,0 +1,24 @@
+{
+  "name": "SERVICE",
+  "thai_name": "ข้อมูลการรับบริการของผู้ป่วยนอก",
+  "description": "Outpatient (OPD) service visit records.",
+  "delimiter": "|",
+  "primary_key": ["HOSPCODE", "PID", "SEQ"],
+  "fields": [
+    {"name": "HOSPCODE", "thai": "รหัสสถานพยาบาล", "type": "string", "required": true, "exact_length": 5},
+    {"name": "PID", "thai": "ทะเบียนบุคคล", "type": "string", "required": true, "max_length": 15},
+    {"name": "SEQ", "thai": "ลำดับที่ของการรับบริการ", "type": "string", "required": true, "max_length": 16},
+    {"name": "DATE_SERV", "thai": "วันที่มารับบริการ", "type": "date", "required": true},
+    {"name": "TIME_SERV", "thai": "เวลาที่มารับบริการ", "type": "time", "required": false},
+    {"name": "LOCATION", "thai": "สถานที่รับบริการ", "type": "string", "required": false, "allowed": ["1", "2", "3"], "notes": "1=ในสถานพยาบาล, 2=นอกสถานพยาบาล, 3=ที่บ้าน"},
+    {"name": "INTIME", "thai": "เวลาที่ให้บริการ", "type": "time", "required": false},
+    {"name": "TYPEIN", "thai": "ประเภทการมารับบริการ", "type": "string", "required": false, "allowed": ["1", "2", "3", "4"]},
+    {"name": "TYPEOUT", "thai": "ผลการให้บริการ/จำหน่าย", "type": "string", "required": false, "max_length": 1},
+    {"name": "MAIN", "thai": "รหัสสถานพยาบาลหลักที่รับบริการ", "type": "string", "required": false, "exact_length": 5},
+    {"name": "BTEMP", "thai": "อุณหภูมิร่างกาย (องศาเซลเซียส)", "type": "decimal", "required": false, "min": 30, "max": 45},
+    {"name": "SBP", "thai": "ความดันโลหิตตัวบน", "type": "int", "required": false, "min": 0, "max": 300},
+    {"name": "DBP", "thai": "ความดันโลหิตตัวล่าง", "type": "int", "required": false, "min": 0, "max": 200},
+    {"name": "PR", "thai": "อัตราการเต้นของชีพจร", "type": "int", "required": false, "min": 0, "max": 300},
+    {"name": "D_UPDATE", "thai": "วันเวลาที่ปรับปรุงข้อมูล", "type": "datetime", "required": true}
+  ]
+}
