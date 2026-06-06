@@ -1,0 +1,17 @@
+{
+  "name": "APPOINTMENT",
+  "thai_name": "ข้อมูลการนัดหมายผู้ป่วย",
+  "description": "Follow-up appointments scheduled for outpatients.",
+  "delimiter": "|",
+  "primary_key": ["HOSPCODE", "PID", "SEQ", "APDATE"],
+  "fields": [
+    {"name": "HOSPCODE", "thai": "รหัสสถานพยาบาล", "type": "string", "required": true, "exact_length": 5},
+    {"name": "PID", "thai": "ทะเบียนบุคคล", "type": "string", "required": true, "max_length": 15},
+    {"name": "SEQ", "thai": "ลำดับที่ของการรับบริการที่ทำการนัด", "type": "string", "required": true, "max_length": 16},
+    {"name": "DATE_SERV", "thai": "วันที่มารับบริการ", "type": "date", "required": true},
+    {"name": "APDATE", "thai": "วันที่นัด", "type": "date", "required": true},
+    {"name": "APTeam", "thai": "หน่วยงาน/คลินิกที่นัด", "type": "string", "required": false, "max_length": 5},
+    {"name": "DEPARTMENT", "thai": "รหัสแผนกที่นัด", "type": "string", "required": false, "max_length": 5},
+    {"name": "D_UPDATE", "thai": "วันเวลาที่ปรับปรุงข้อมูล", "type": "datetime", "required": true}
+  ]
+}

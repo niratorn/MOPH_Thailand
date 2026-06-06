@@ -1,0 +1,21 @@
+{
+  "name": "DRUG_OPD",
+  "thai_name": "ข้อมูลยาที่ผู้ป่วยนอกได้รับ",
+  "description": "Drugs dispensed to outpatients per visit.",
+  "delimiter": "|",
+  "primary_key": ["HOSPCODE", "PID", "SEQ", "DIDSTD"],
+  "fields": [
+    {"name": "HOSPCODE", "thai": "รหัสสถานพยาบาล", "type": "string", "required": true, "exact_length": 5},
+    {"name": "PID", "thai": "ทะเบียนบุคคล", "type": "string", "required": true, "max_length": 15},
+    {"name": "SEQ", "thai": "ลำดับที่ของการรับบริการ", "type": "string", "required": true, "max_length": 16},
+    {"name": "DATE_SERV", "thai": "วันที่มารับบริการ", "type": "date", "required": true},
+    {"name": "DIDSTD", "thai": "รหัสยามาตรฐาน 24 หลัก", "type": "string", "required": true, "max_length": 24},
+    {"name": "DNAME", "thai": "ชื่อยาที่สถานพยาบาลใช้", "type": "string", "required": false, "max_length": 255},
+    {"name": "AMOUNT", "thai": "จำนวนที่จ่าย", "type": "decimal", "required": false, "min": 0},
+    {"name": "UNIT", "thai": "หน่วยของยา", "type": "string", "required": false, "max_length": 30},
+    {"name": "DRUGPRICE", "thai": "ราคาขายต่อหน่วย", "type": "decimal", "required": false, "min": 0},
+    {"name": "DRUGCOST", "thai": "ราคาทุนต่อหน่วย", "type": "decimal", "required": false, "min": 0},
+    {"name": "PROVIDER", "thai": "รหัสผู้สั่งใช้ยา", "type": "string", "required": false, "max_length": 15},
+    {"name": "D_UPDATE", "thai": "วันเวลาที่ปรับปรุงข้อมูล", "type": "datetime", "required": true}
+  ]
+}

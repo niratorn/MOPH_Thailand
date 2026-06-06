@@ -76,6 +76,67 @@ def write_result_json(result: ValidationResult, path: str) -> None:
         json.dump(result_to_dict(result), fh, ensure_ascii=False, indent=2)
 
 
+def _require_openpyxl():
+    try:
+        import openpyxl  # noqa: F401
+        return openpyxl
+    except ImportError as exc:  # pragma: no cover - exercised via CLI message
+        raise SystemExit(
+            "Excel output requires the optional 'openpyxl' package.\n"
+            "Install it with:  pip install openpyxl   (or:  pip install "
+            "'moph-report[excel]')"
+        ) from exc
+
+
+def write_issues_xlsx(result: ValidationResult, path: str) -> None:
+    """Write the validation result to a two-sheet Excel workbook.
+
+    Sheet 1 ("Summary") gives the headline counts; sheet 2 ("Issues") lists
+    every finding. Friendlier for non-technical staff than a raw CSV.
+    """
+    openpyxl = _require_openpyxl()
+    wb = openpyxl.Workbook()
+
+    ws = wb.active
+    ws.title = "Summary"
+    ws.append(["Schema", result.schema_name])
+    ws.append(["Rows checked", result.total_rows])
+    ws.append(["Errors", len(result.errors)])
+    ws.append(["Warnings", len(result.warnings)])
+    ws.append(["Rows with errors", result.rows_with_errors()])
+    ws.append(["Result", "PASS" if result.is_valid else "FAIL"])
+    ws.append([])
+    ws.append(["Findings by rule", "Count"])
+    for rule, count in Counter(i.rule for i in result.issues).most_common():
+        ws.append([rule, count])
+
+    issues_ws = wb.create_sheet("Issues")
+    issues_ws.append(["row", "column", "severity", "rule", "message", "value"])
+    for i in result.issues:
+        issues_ws.append([i.row, i.column, i.severity, i.rule, i.message, i.value])
+
+    wb.save(path)
+
+
+def write_summary_xlsx(summary: dict, path: str) -> None:
+    """Write aggregate statistics to an Excel workbook (one sheet per field)."""
+    openpyxl = _require_openpyxl()
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Overview"
+    ws.append(["Schema", summary["schema"]])
+    ws.append(["Thai name", summary["thai_name"]])
+    ws.append(["Total rows", summary["total_rows"]])
+
+    for field_name, counts in summary["breakdowns"].items():
+        sheet = wb.create_sheet(field_name[:31])  # Excel sheet-name limit
+        sheet.append([field_name, "Count"])
+        for code, n in counts.items():
+            sheet.append([code, n])
+
+    wb.save(path)
+
+
 def build_summary(data: DataFile, schema: Schema) -> dict:
     """Produce simple aggregate statistics for a data file.
 

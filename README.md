@@ -25,7 +25,10 @@ fixing. It also generates quick summary statistics for monthly review.
 - 📅 **Date sanity checks** — flags the common Buddhist-era (พ.ศ.) vs.
   Gregorian (ค.ศ.) mix-up and invalid calendar dates.
 - 🔁 **Duplicate detection** on each file's primary key.
+- 🔗 **Cross-file referential checks** — e.g. every OPD diagnosis points to a
+  real SERVICE visit, every visit points to a real PERSON.
 - 📊 **Summary reports** — e.g. sex distribution, diagnosis-type counts.
+- 📑 **Excel (.xlsx) output** for non-technical staff (optional `openpyxl`).
 - 🧰 **Zero dependencies** — pure Python standard library. Runs offline on a
   stock Python 3.9+ install. Reads UTF-8 *and* legacy TIS-620/CP874 exports.
 - 🤖 **Script/CI-friendly** — exits non-zero when validation fails.
@@ -35,8 +38,13 @@ fixing. It also generates quick summary statistics for monthly review.
 | File | Thai | Description |
 |------|------|-------------|
 | `PERSON` | ข้อมูลทั่วไปของประชาชน | Demographics of people in the catchment area |
+| `ADDRESS` | ที่อยู่ของบุคคล | Address records |
 | `SERVICE` | การรับบริการผู้ป่วยนอก | Outpatient (OPD) service visits |
 | `DIAGNOSIS_OPD` | การวินิจฉัยผู้ป่วยนอก | Outpatient ICD-10 diagnoses |
+| `DRUG_OPD` | ยาที่ผู้ป่วยนอกได้รับ | Drugs dispensed per OPD visit |
+| `CHARGE_OPD` | ค่าใช้จ่ายผู้ป่วยนอก | OPD charge / billing line items |
+| `CHRONIC` | การป่วยด้วยโรคเรื้อรัง | Chronic disease registry |
+| `APPOINTMENT` | การนัดหมายผู้ป่วย | Follow-up appointments |
 | `DEATH` | ข้อมูลการตาย | Death records |
 
 More of the 43 files can be added by dropping a JSON schema into
@@ -67,8 +75,14 @@ moph-report describe PERSON
 # Validate an exported file (auto-detects delimiter & encoding)
 moph-report validate person.txt --schema PERSON
 
-# Write a full, reviewable error report to CSV
+# Write a full, reviewable error report to CSV (or Excel for non-technical staff)
 moph-report validate person.txt --schema PERSON --out person.errors.csv
+moph-report validate person.txt --schema PERSON --xlsx person.errors.xlsx
+
+# Check referential integrity ACROSS files (orphan visits/diagnoses/etc.)
+moph-report crosscheck PERSON=person.txt SERVICE=service.txt \
+                       DIAGNOSIS_OPD=diagnosis.txt
+# (a bare path infers its schema from the filename, e.g. service.txt -> SERVICE)
 
 # Quick aggregate stats for a monthly sanity check
 moph-report summary service.txt --schema SERVICE
@@ -76,6 +90,9 @@ moph-report summary service.txt --schema SERVICE
 # Validate a single Thai national ID
 moph-report check-cid 1101700203450
 ```
+
+> 📑 **Excel output** (`--xlsx`) needs the optional `openpyxl` package:
+> `pip install 'moph-report[excel]'`.
 
 ### Example
 
@@ -87,6 +104,14 @@ moph-report validate examples/person_with_errors.txt --schema PERSON
 
 You'll see it catch a bad national-ID check digit, a Buddhist-era birth date,
 out-of-range codes, a missing required field, and a duplicate record.
+
+And try a cross-file check — the sample diagnosis file contains one visit with
+no matching SERVICE record:
+
+```bash
+moph-report crosscheck examples/person_sample.txt \
+            examples/service_sample.txt examples/diagnosis_opd_sample.txt
+```
 
 ## Privacy & safety
 

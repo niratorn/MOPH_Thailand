@@ -1,0 +1,18 @@
+{
+  "name": "ADDRESS",
+  "thai_name": "ข้อมูลที่อยู่ของบุคคล",
+  "description": "Address records for people in the catchment area.",
+  "delimiter": "|",
+  "primary_key": ["HOSPCODE", "CID", "ADDRESSTYPE"],
+  "fields": [
+    {"name": "HOSPCODE", "thai": "รหัสสถานพยาบาล", "type": "string", "required": true, "exact_length": 5},
+    {"name": "CID", "thai": "เลขประจำตัวประชาชน", "type": "cid", "required": true, "exact_length": 13},
+    {"name": "ADDRESSTYPE", "thai": "ประเภทที่อยู่", "type": "string", "required": true, "allowed": ["1", "2", "3", "4", "5"], "notes": "1=ทะเบียนบ้าน, 2=ที่อยู่ปัจจุบัน, ..."},
+    {"name": "HOUSE_ID", "thai": "เลขที่บ้าน", "type": "string", "required": false, "max_length": 8},
+    {"name": "VILLAGE", "thai": "หมู่ที่", "type": "string", "required": false, "max_length": 2},
+    {"name": "TAMBON", "thai": "รหัสตำบล", "type": "string", "required": false, "max_length": 6},
+    {"name": "AMPUR", "thai": "รหัสอำเภอ", "type": "string", "required": false, "max_length": 4},
+    {"name": "CHANGWAT", "thai": "รหัสจังหวัด", "type": "string", "required": false, "max_length": 2},
+    {"name": "D_UPDATE", "thai": "วันเวลาที่ปรับปรุงข้อมูล", "type": "datetime", "required": true}
+  ]
+}

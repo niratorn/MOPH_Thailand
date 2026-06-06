@@ -1,0 +1,16 @@
+{
+  "name": "CHRONIC",
+  "thai_name": "ข้อมูลการป่วยด้วยโรคเรื้อรัง",
+  "description": "Chronic disease registry for people in the catchment area.",
+  "delimiter": "|",
+  "primary_key": ["HOSPCODE", "PID", "DIAGCODE"],
+  "fields": [
+    {"name": "HOSPCODE", "thai": "รหัสสถานพยาบาล", "type": "string", "required": true, "exact_length": 5},
+    {"name": "PID", "thai": "ทะเบียนบุคคล", "type": "string", "required": true, "max_length": 15},
+    {"name": "DATE_DIAG", "thai": "วันที่วินิจฉัยโรคเรื้อรังครั้งแรก", "type": "date", "required": true},
+    {"name": "DIAGCODE", "thai": "รหัสวินิจฉัยโรคเรื้อรัง (ICD-10)", "type": "icd10", "required": true, "max_length": 6},
+    {"name": "CLINIC", "thai": "รหัสคลินิกที่ให้บริการ", "type": "string", "required": false, "max_length": 5},
+    {"name": "PROVIDER", "thai": "รหัสผู้ให้บริการ", "type": "string", "required": false, "max_length": 15},
+    {"name": "D_UPDATE", "thai": "วันเวลาที่ปรับปรุงข้อมูล", "type": "datetime", "required": true}
+  ]
+}

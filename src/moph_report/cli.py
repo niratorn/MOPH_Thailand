@@ -15,7 +15,7 @@ from __future__ import annotations
 import argparse
 import sys
 
-from . import __version__, loader, report
+from . import __version__, crosscheck, loader, report
 from .rules import is_valid_thai_cid
 from .schema import list_schemas, load_schema, load_schema_file
 from .validator import validate
@@ -66,6 +66,9 @@ def cmd_validate(args) -> int:
     if args.json:
         report.write_result_json(result, args.json)
         print(f"JSON result written to:       {args.json}")
+    if args.xlsx:
+        report.write_issues_xlsx(result, args.xlsx)
+        print(f"Excel report written to:      {args.xlsx}")
 
     # Non-zero exit code on failure so this is CI/script friendly.
     return 0 if result.is_valid else 1
@@ -81,7 +84,44 @@ def cmd_summary(args) -> int:
         with open(args.json, "w", encoding="utf-8") as fh:
             json.dump(summary, fh, ensure_ascii=False, indent=2)
         print(f"\nSummary written to: {args.json}")
+    if args.xlsx:
+        report.write_summary_xlsx(summary, args.xlsx)
+        print(f"\nExcel summary written to: {args.xlsx}")
     return 0
+
+
+def _parse_crosscheck_inputs(tokens):
+    """Turn ``SCHEMA=path`` / bare ``path`` tokens into {SCHEMA: DataFile}.
+
+    A bare path infers its schema from the filename stem (e.g. ``service.txt``
+    -> SERVICE) when that matches a bundled schema.
+    """
+    bundled = set(list_schemas())
+    files = {}
+    for token in tokens:
+        if "=" in token:
+            name, _, path = token.partition("=")
+            name = name.strip().upper()
+        else:
+            path = token
+            import os
+            stem = os.path.splitext(os.path.basename(path))[0]
+            # Strip a common "_sample" suffix and uppercase to match schema names.
+            name = stem.replace("_sample", "").replace("_with_errors", "").upper()
+        if name not in bundled:
+            raise SystemExit(
+                f"cannot determine a known schema for '{token}'. "
+                f"Use SCHEMA=path, e.g. SERVICE={path}. "
+                f"Known schemas: {', '.join(sorted(bundled))}")
+        files[name] = loader.load(path)
+    return files
+
+
+def cmd_crosscheck(args) -> int:
+    files = _parse_crosscheck_inputs(args.inputs)
+    result = crosscheck.crosscheck(files)
+    crosscheck.print_crosscheck(result, sys.stdout)
+    return 0 if result.is_valid else 1
 
 
 def cmd_check_cid(args) -> int:
@@ -120,6 +160,8 @@ def build_parser() -> argparse.ArgumentParser:
     p_val.add_argument("--encoding", help="file encoding (default: auto-detect)")
     p_val.add_argument("--out", help="write the full issue report to this CSV path")
     p_val.add_argument("--json", help="write a machine-readable JSON result")
+    p_val.add_argument("--xlsx", help="write an Excel (.xlsx) report "
+                       "(needs the optional 'openpyxl' package)")
     p_val.set_defaults(func=cmd_validate)
 
     p_sum = sub.add_parser("summary", help="show aggregate stats for a data file")
@@ -128,7 +170,18 @@ def build_parser() -> argparse.ArgumentParser:
     p_sum.add_argument("--delimiter", help="field delimiter (default: auto-detect)")
     p_sum.add_argument("--encoding", help="file encoding (default: auto-detect)")
     p_sum.add_argument("--json", help="write the summary to this JSON path")
+    p_sum.add_argument("--xlsx", help="write the summary to this Excel (.xlsx) path "
+                       "(needs the optional 'openpyxl' package)")
     p_sum.set_defaults(func=cmd_summary)
+
+    p_cross = sub.add_parser(
+        "crosscheck",
+        help="check referential integrity across several 43-file exports")
+    p_cross.add_argument(
+        "inputs", nargs="+",
+        help="files to cross-check as SCHEMA=path (e.g. PERSON=person.txt "
+             "SERVICE=service.txt); a bare path infers the schema from its name")
+    p_cross.set_defaults(func=cmd_crosscheck)
 
     p_cid = sub.add_parser("check-cid", help="validate a single Thai national ID")
     p_cid.add_argument("cid", help="13-digit Thai national ID")
@@ -140,7 +193,11 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv=None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
-    return args.func(args)
+    try:
+        return args.func(args)
+    except BrokenPipeError:
+        # Output was piped to a command that closed early (e.g. `| head`).
+        return 0
 
 
 if __name__ == "__main__":  # pragma: no cover

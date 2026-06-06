@@ -1,0 +1,19 @@
+{
+  "name": "CHARGE_OPD",
+  "thai_name": "ข้อมูลค่าใช้จ่ายของผู้ป่วยนอก",
+  "description": "Outpatient charge / billing line items per visit.",
+  "delimiter": "|",
+  "primary_key": ["HOSPCODE", "PID", "SEQ", "CHRGITEM"],
+  "fields": [
+    {"name": "HOSPCODE", "thai": "รหัสสถานพยาบาล", "type": "string", "required": true, "exact_length": 5},
+    {"name": "PID", "thai": "ทะเบียนบุคคล", "type": "string", "required": true, "max_length": 15},
+    {"name": "SEQ", "thai": "ลำดับที่ของการรับบริการ", "type": "string", "required": true, "max_length": 16},
+    {"name": "DATE_SERV", "thai": "วันที่มารับบริการ", "type": "date", "required": true},
+    {"name": "CHRGITEM", "thai": "หมวดค่าบริการ", "type": "string", "required": true, "max_length": 2},
+    {"name": "CHRGLIST", "thai": "รายการค่าบริการ", "type": "string", "required": false, "max_length": 50},
+    {"name": "QTY", "thai": "จำนวน", "type": "decimal", "required": false, "min": 0},
+    {"name": "AMOUNT", "thai": "จำนวนเงินที่เรียกเก็บ", "type": "decimal", "required": false, "min": 0},
+    {"name": "PAYPRICE", "thai": "จำนวนเงินที่ผู้ป่วยจ่ายเอง", "type": "decimal", "required": false, "min": 0},
+    {"name": "D_UPDATE", "thai": "วันเวลาที่ปรับปรุงข้อมูล", "type": "datetime", "required": true}
+  ]
+}
